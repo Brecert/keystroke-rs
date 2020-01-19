@@ -100,7 +100,6 @@ fn key_to_lpinput(key: &Key, up: bool) -> INPUT {
             }
         }
         Key::Emulated(c) => {
-            // emulated is slower but more "accurate".
             let long = unsafe { VkKeyScanA(c as i8) };
             let vkey = unsafe { MapVirtualKeyA(long as u32, MAPVK_VK_TO_VSC) };
             INPUT {
@@ -109,6 +108,33 @@ fn key_to_lpinput(key: &Key, up: bool) -> INPUT {
                     transmute_copy(&KEYBDINPUT {
                         wVk: long as u16,
                         wScan: vkey as u16,
+                        dwFlags: upflag,
+                        time: 0,
+                        dwExtraInfo: 0,
+                    })
+                },
+            }
+        }
+        Key::Auto(c) => {
+            let long = unsafe { VkKeyScanA(c as i8) };
+            let modifier = long >> 8;
+            let key = long & 0xff;
+
+            if modifier & 1 != 0 {
+                send_input(&[Key::Physical(Physical::Shift)], up)
+            }
+            if modifier & 2 != 0 {
+                send_input(&[Key::Physical(Physical::Control)], up)
+            }
+            
+            // todo: menu & 4
+
+            INPUT {
+                type_: INPUT_KEYBOARD,
+                u: unsafe {
+                    transmute_copy(&KEYBDINPUT {
+                        wVk: key as u16,
+                        wScan: 0,
                         dwFlags: upflag,
                         time: 0,
                         dwExtraInfo: 0,

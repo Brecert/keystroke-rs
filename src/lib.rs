@@ -43,6 +43,7 @@ pub enum Key {
     Physical(Physical),
     Unicode(char),
     Emulated(char),
+    Auto(char)
 }
 
 #[cfg(target_os = "windows")]
@@ -65,5 +66,10 @@ mod tests {
     #[test]
     fn test_emulated_char() {
         send_key(Key::Emulated('a'));
+    }
+
+    #[test]
+    fn test_auto_char() {
+        send_key(Key::Auto('@'));
     }
 }
