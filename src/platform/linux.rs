@@ -1,10 +1,10 @@
-extern crate libxdo;
 extern crate itertools;
+extern crate libxdo;
 
-use std::borrow::Cow;
 use self::itertools::Itertools;
 use self::libxdo::XDo;
-use super::{Physical, Key};
+use super::{Key, Physical};
+use std::borrow::Cow;
 
 const DELAY: u32 = 12_000; // microseconds
 
@@ -81,9 +81,11 @@ pub fn send_combo(keys: &[Key]) {
 pub fn send_key(key: Key) {
     match key {
         Key::Unicode(c) => send_char(c),
-        Key::Physical(key) => if let Ok(xdo) = XDo::new(None) {
-            let sym = get_physical_keysym(key);
-            let _ = xdo.send_keysequence(sym, DELAY);
+        Key::Physical(key) => {
+            if let Ok(xdo) = XDo::new(None) {
+                let sym = get_physical_keysym(key);
+                let _ = xdo.send_keysequence(sym, DELAY);
+            }
         }
     }
 }

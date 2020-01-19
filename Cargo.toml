@@ -2,16 +2,15 @@
 
 name = "keystroke"
 version = "0.0.3"
-authors = ["Alex Chandel <alexchandel@gmail.com>"]
+authors = ["Bree 11599528+Brecert@users.noreply.github.com"]
 description = "Send a string, character, or keystroke event to the system."
 keywords = ["keyboard", "gui", "scripting"]
-repository = "https://github.com/alexchandel/keystroke-rs"
+repository = "https://github.com/brecert/keystroke-rs"
 readme = "README.md"
 license = "Unlicense"
 
 [target.'cfg(windows)'.dependencies]
-winapi = "^0"
-user32-sys = "^0"
+winapi = { version = "0.3", features = ["winuser"] }
 
 [target.'cfg(target_os="linux")'.dependencies]
 libxdo = "0.4.1"
