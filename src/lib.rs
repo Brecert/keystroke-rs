@@ -42,6 +42,7 @@ pub enum Physical {
 pub enum Key {
     Physical(Physical),
     Unicode(char),
+    Emulated(char),
 }
 
 #[cfg(target_os = "windows")]
@@ -54,10 +55,15 @@ mod platform;
 
 #[cfg(test)]
 mod tests {
-    use super::send_str;
+    use super::{send_key, send_str, Key};
 
     #[test]
     fn test_lowercase_str() {
         send_str("echo 'test'\n");
+    }
+
+    #[test]
+    fn test_emulated_char() {
+        send_key(Key::Emulated('a'));
     }
 }

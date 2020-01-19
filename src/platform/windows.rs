@@ -2,8 +2,8 @@ extern crate winapi;
 
 use self::winapi::shared::minwindef::WORD;
 use self::winapi::um::winuser::{
-    SendInput, INPUT, INPUT_KEYBOARD, KEYBDINPUT, KEYEVENTF_KEYUP, KEYEVENTF_SCANCODE,
-    KEYEVENTF_UNICODE,
+    MapVirtualKeyA, SendInput, VkKeyScanA, INPUT, INPUT_KEYBOARD, KEYBDINPUT, KEYEVENTF_KEYUP,
+    KEYEVENTF_SCANCODE, KEYEVENTF_UNICODE, MAPVK_VK_TO_VSC,
 };
 use std::mem::{size_of, transmute_copy};
 
@@ -45,6 +45,28 @@ fn get_scancode(p: Physical) -> u16 {
     }
 }
 
+// fn unicode_to_inputs(c: char) -> Vec<INPUT> {
+//     let mut wide = [0; 2];
+//     c.encode_utf16(&mut wide);
+//     let mut inputs: Vec<INPUT> = vec![];
+//     for i in 0..wide.len()-1 {
+//         dbg!(i);
+//         dbg!(wide[i]);
+//         let input = INPUT {
+//             type_: INPUT_KEYBOARD,
+//             u: unsafe { transmute_copy(&KEYBDINPUT {
+//                 wVk: 0,
+//                 wScan: wide[i],
+//                 time: 0,
+//                 dwFlags: KEYEVENTF_UNICODE,
+//                 dwExtraInfo: zeroed()
+//             }) }
+//         };
+//         inputs.push(input);
+//     }
+//     inputs
+// }
+
 fn key_to_lpinput(key: &Key, up: bool) -> INPUT {
     let upflag = if up { KEYEVENTF_KEYUP } else { 0 };
 
@@ -71,6 +93,23 @@ fn key_to_lpinput(key: &Key, up: bool) -> INPUT {
                         wVk: 0,
                         wScan: c as WORD, // a unicode code
                         dwFlags: KEYEVENTF_UNICODE | upflag,
+                        time: 0,
+                        dwExtraInfo: 0,
+                    })
+                },
+            }
+        }
+        Key::Emulated(c) => {
+            // emulated is slower but more "accurate".
+            let long = unsafe { VkKeyScanA(c as i8) };
+            let vkey = unsafe { MapVirtualKeyA(long as u32, MAPVK_VK_TO_VSC) };
+            INPUT {
+                type_: INPUT_KEYBOARD,
+                u: unsafe {
+                    transmute_copy(&KEYBDINPUT {
+                        wVk: long as u16,
+                        wScan: vkey as u16,
+                        dwFlags: upflag,
                         time: 0,
                         dwExtraInfo: 0,
                     })
