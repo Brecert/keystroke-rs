@@ -1,17 +1,13 @@
 [package]
 
-name = "keystroke"
-version = "0.0.3"
+name = "sysinputs"
+version = "0.0.5"
 authors = ["Bree 11599528+Brecert@users.noreply.github.com"]
-description = "Send a string, character, or keystroke event to the system."
+description = "Generate native system input events."
 keywords = ["keyboard", "gui", "scripting"]
-repository = "https://github.com/brecert/keystroke-rs"
+repository = "https://github.com/brecert/native-system-input-events"
 readme = "README.md"
 license = "Unlicense"
 
 [target.'cfg(windows)'.dependencies]
 winapi = { version = "0.3", features = ["winuser"] }
-
-[target.'cfg(target_os="linux")'.dependencies]
-libxdo = "0.4.1"
-itertools = "0.5.6"

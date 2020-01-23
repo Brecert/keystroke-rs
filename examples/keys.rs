@@ -1,11 +1,11 @@
-extern crate keystroke;
+extern crate sysinputs;
 
 // simple
-use keystroke::{send_char, send_str};
+use sysinputs::keyboard::{send_char, send_str};
 // medium
-use keystroke::{send_combo, send_key, Key, Physical};
+use sysinputs::keyboard::{send_combo, send_key, Key, Physical};
 // complicated
-use keystroke::{press_key, release_key};
+use sysinputs::keyboard::{press_key, release_key};
 
 fn main() {
     // simple

@@ -10,7 +10,7 @@ use std::mem::{size_of, transmute_copy};
 use super::{Key, Physical};
 
 fn get_scancode(p: Physical) -> u16 {
-    use Physical::*;
+    use self::Physical::*;
     match p {
         Return => 0x1c,
         Shift => 0x2a,
@@ -126,7 +126,7 @@ fn key_to_lpinput(key: &Key, up: bool) -> INPUT {
             if modifier & 2 != 0 {
                 send_input(&[Key::Physical(Physical::Control)], up)
             }
-            
+
             // todo: menu & 4
 
             INPUT {

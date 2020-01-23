@@ -1,44 +1,47 @@
-# keystroke-rs
-Send a string, character, or keystroke event to the system.
+# sysinputs
+Generate native system input events. Currently windows only.
 
 Contributions welcome!
 
 ## Examples
 
 ```rust
-extern crate keystroke;
+extern crate sysinputs;
 
 // simple
-use keystroke::{send_char, send_str};
+use sysinputs::keyboard::{send_char, send_str};
 // medium
-use keystroke::{send_key, send_combo, Key, Physical};
+use sysinputs::keyboard::{send_combo, send_key, Key, Physical};
 // complicated
-use keystroke::{press_key, release_key};
+use sysinputs::keyboard::{press_key, release_key};
 
 fn main() {
-	// simple
-	send_str("echo FOO bar\n");
-	send_char('\n');
+    // simple
+    send_str("echo FOO bar\n");
+    send_char('\n');
 
-	// medium
-	send_combo(&[
-		Key::Physical(Physical::E), Key::Unicode('c'), Key::Unicode('h'), Key::Unicode('o'),
-		Key::Physical(Physical::Return)]);
-	send_key(Key::Physical(Physical::Return));
+    // medium
+    send_combo(&[
+        Key::Physical(Physical::E),
+        Key::Unicode('c'),
+        Key::Unicode('h'),
+        Key::Unicode('o'),
+    ]);
+    send_key(Key::Physical(Physical::Return));
 
-	// complicated
-	use Key::{Physical, Unicode};
-	use Physical::{E, C, H, O, Return, Shift};
-	press_key(Physical(Shift));
-	send_combo(&[
-		Physical(E), Physical(C), Physical(H), Physical(O)]);
-	release_key(Physical(Shift));
-	send_key(Physical(Return));
+    // complicated
+    press_key(Key::Physical(Physical::Shift));
+    send_combo(&[
+        Key::Physical(Physical::E),
+        Key::Unicode('c'),
+        Key::Unicode('h'),
+        Key::Unicode('o'),
+    ]);
+    release_key(Key::Physical(Physical::Shift));
+    send_key(Key::Physical(Physical::Return));
 }
 ```
 
-TLDR; call `keystroke::send_str` with a `&str`.
-
 ## Development
 
-* Only supports Windows and Linux right now. PRs adding MacOS and other OS are welcome!
+* Only supports Windows right now. PRs adding MacOS, Linux, and other OS are welcome!
